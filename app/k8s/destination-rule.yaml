@@ -1,0 +1,27 @@
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+
+metadata:
+  name: app-service-mesh-dr
+
+spec:
+  host: app-service-mesh-svc.app.svc.cluster.local
+  trafficPolicy:
+    outlierDetection:
+      consecutiveGatewayErrors: 1
+      interval: 1s
+      baseEjectionTime: 120s
+      maxEjectionPercent: 100
+    loadBalancer:
+      consistentHash:
+        httpQueryParameterName: "teste"
+  subsets: 
+  - name: V1
+    labels:
+      version: V1
+    # trafficPolicy:
+    #   loadBalancer:
+    #     simple: LEAST_CONN
+  - name: V2
+    labels:
+      version: V2

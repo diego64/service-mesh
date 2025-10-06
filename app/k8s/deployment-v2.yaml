@@ -2,10 +2,10 @@ apiVersion: apps/v1
 kind: Deployment
 
 metadata:
-  name: app-service-mesh
+  name: app-service-mesh-v2
 
 spec:
-  replicas: 4
+  replicas: 3
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -18,11 +18,11 @@ spec:
     metadata:
       labels:
         app: app-service-mesh
-        version: V1
+        version: V2
     spec:
       containers:
         - name: app-service-mesh
-          image: diego64/app-service-mesh:v1
+          image: diego64/app-service-mesh:v2
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000

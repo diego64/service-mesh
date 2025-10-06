@@ -1,0 +1,64 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: app-service-mesh-routes
+spec:
+  hosts:
+    - app-service-mesh-svc.app.svc.cluster.local
+  http:
+    # Exemplo de fault injection
+    # - fault:
+    #     delay:
+    #       fixedDelay: 1s
+    #       percentage:
+    #         value: 5
+    #     # abort:
+    #     #   httpStatus: 504
+    #     #   percentage:
+    #     #     value: 50
+    #   route:
+    #     - destination:
+    #         host: app-service-mesh-svc.app.svc.cluster.local
+    #         subset: V1
+    #   retries:
+    #     attempts: 3
+    #     perTryTimeout: 1s
+    #   timeout: 0.2s
+
+    # Exemplo de regras de roteamento
+    # - name: "app-service-mesh-v2"
+    #   match:
+    #     - uri:
+    #         prefix: "/teste"
+    #     - uri:
+    #         prefix: "/teste-2"
+    #   rewrite:
+    #     uri: "/healthz"
+    #   route:
+    #     - destination:
+    #         host: app-service-mesh-svc.app.svc.cluster.local
+    #         subset: V2
+    # - name: "app-service-mesh-v1"
+    #   route:
+    #     - destination:
+    #         host: app-service-mesh-svc.app.svc.cluster.local
+    #         subset: V1
+
+    # Exemplo de canary/split
+    - name: "app-service-mesh-v2"
+      match:
+        - queryParams:
+            testeab:
+              exact: "true"
+      route:
+        - destination:
+            host: app-service-mesh-svc.app.svc.cluster.local
+            subset: V2
+          # weight: 50
+
+    - name: "app-service-mesh-v1"
+      route:
+        - destination:
+            host: app-service-mesh-svc.app.svc.cluster.local
+            subset: V1
+          # weight: 50
